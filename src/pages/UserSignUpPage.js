@@ -6,7 +6,8 @@ import * as authActions from '../redux/authActions';
 
 export class UserSignupPage extends React.Component {
     state = {
-        displayName: '',
+        name: '',
+        surname: '',
         username: '',
         password: '',
         passwordRepeat: '',
@@ -15,11 +16,18 @@ export class UserSignupPage extends React.Component {
         passwordRepeatConfirmed: true
     };
 
-    onChangeDisplayName = (event) => {
+    onChangeName = (event) => {
         const value = event.target.value;
         const errors = {...this.state.errors};
-        delete errors.displayName;
-        this.setState({displayName: value, errors});
+        delete errors.name;
+        this.setState({name: value, errors});
+    };
+
+    onChangeSurname = (event) => {
+        const value = event.target.value;
+        const errors = {...this.state.errors};
+        delete errors.surname;
+        this.setState({surname: value, errors});
     };
 
     onChangeUsername = (event) => {
@@ -52,8 +60,9 @@ export class UserSignupPage extends React.Component {
 
     onClickSignup = () => {
         const user = {
+            name: this.state.name,
+            surname: this.state.surname,
             username: this.state.username,
-            displayName: this.state.displayName,
             password: this.state.password
         };
         this.setState({pendingApiCall: true});
@@ -79,12 +88,22 @@ export class UserSignupPage extends React.Component {
                 <h1 className="text-center">Sign Up</h1>
                 <div className="col-12 mb-3">
                     <Input
-                        label="Display Name"
-                        placeholder="Your display name"
-                        value={this.state.displayName}
-                        onChange={this.onChangeDisplayName}
-                        hasError={this.state.errors.displayName && true}
-                        error={this.state.errors.displayName}
+                        label="Name"
+                        placeholder="Your name"
+                        value={this.state.name}
+                        onChange={this.onChangeName}
+                        hasError={this.state.errors.name && true}
+                        error={this.state.errors.name}
+                    />
+                </div>
+                <div className="col-12 mb-3">
+                    <Input
+                        label="Surname"
+                        placeholder="Your surname"
+                        value={this.state.surname}
+                        onChange={this.onChangeSurname}
+                        hasError={this.state.errors.surname && true}
+                        error={this.state.errors.surname}
                     />
                 </div>
                 <div className="col-12 mb-3">
