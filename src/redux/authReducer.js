@@ -1,8 +1,8 @@
 const initialState = {
     id: 0,
     username: '',
-    displayName: '',
-    image: '',
+    name: '',
+    surname: '',
     password: '',
     isLoggedIn: false
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from '../assets/favorite-logo.png';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';

@@ -1,9 +1,9 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
-import HomePage from '../pages/HomePage';
-import LoginPage from '../pages/LoginPage';
 import TopBar from '../components/TopBar';
-import {UserSignupPage} from "../pages/UserSignUpPage";
+import HomePage from "../pages/HomePage";
+import UserSignupPage from "../pages/UserSignUpPage";
+import LoginPage from '../pages/LoginPage';
 
 function App() {
     return (
