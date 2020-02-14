@@ -4,6 +4,7 @@ import TopBar from '../components/TopBar';
 import HomePage from "../pages/HomePage";
 import UserSignupPage from "../pages/UserSignUpPage";
 import LoginPage from '../pages/LoginPage';
+import {CategoryAddPage} from "../pages/CategoryAddPage";
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                     <Route exact path="/" component={HomePage}/>
                     <Route path="/login" component={LoginPage}/>
                     <Route path="/signup" component={UserSignupPage}/>
+                    <Route path="/addCategory" component={CategoryAddPage}/>
                 </Switch>
             </div>
         </div>

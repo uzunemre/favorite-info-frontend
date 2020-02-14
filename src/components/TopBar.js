@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
+import {userInfo} from "../utils/utils";
 
 class TopBar extends React.Component {
     state = {
@@ -27,6 +28,12 @@ class TopBar extends React.Component {
     onClickDisplayName = () => {
         this.setState({
             dropDownVisible: true
+        });
+    };
+
+    onClickAddCategory = () => {
+        this.setState({
+            dropDownVisible: false
         });
     };
 
@@ -89,12 +96,15 @@ class TopBar extends React.Component {
               </span>
                         </div>
                         <div className={dropDownClass} data-testid="drop-down-menu">
-                            <Link
-                                to={`/${this.props.user.username}`}
+                            <span
                                 className="dropdown-item"
-                                onClick={this.onClickMyProfile}
+                            ><i className="fas fa-user text-info"></i> {userInfo(this.props.user)}</span>
+                            <Link
+                                to="/addCategory"
+                                className="dropdown-item"
+                                onClick={this.onClickAddCategory}
                             >
-                                <i className="fas fa-user text-info"></i> My Profile
+                                <i className="fa fa-plus"></i>Add Category
                             </Link>
                             <span
                                 className="dropdown-item"
@@ -102,9 +112,7 @@ class TopBar extends React.Component {
                                 style={{
                                     cursor: 'pointer'
                                 }}
-                            >
-                <i className="fas fa-sign-out-alt text-danger"></i> Logout
-              </span>
+                            ><i className="fas fa-sign-out-alt text-danger"></i> Logout</span>
                         </div>
                     </li>
                 </ul>
