@@ -21,3 +21,7 @@ export const login = (user) => {
 export const addCategory = (category) => {
     return axios.post('/api/1.0/categories', category);
 };
+
+export const listCategories = () => {
+    return axios.get('/api/1.0/categories');
+};
