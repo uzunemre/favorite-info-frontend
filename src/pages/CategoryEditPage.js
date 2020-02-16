@@ -2,9 +2,9 @@ import React from 'react';
 import Input from '../components/Input';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import * as apiCalls from '../api/apiCalls';
-import CategoryList from "../components/CategoryList";
+import Modal from "../components/Modal";
 
-export class CategoryAddPage extends React.Component {
+export class CategoryEditPage extends React.Component {
     state = {
         name: '',
         pendingApiCall: false,
@@ -58,8 +58,30 @@ export class CategoryAddPage extends React.Component {
             });
     };
 
+
+    onClickDeleteCategory = (category) => {
+        this.setState({categoryToBeDeleted: category});
+    };
+
+    onClickModalCancel = () => {
+        this.setState({categoryToBeDeleted: undefined});
+    };
+
+    onClickModalOk = () => {
+        this.setState({isDeletingCategory: true});
+        apiCalls.deleteCategory(this.state.categoryToBeDeleted.id).then((response) => {
+            const categoryList = this.state.categoryList.filter(
+                (category) => category.id !== this.state.categoryToBeDeleted.id
+            );
+            this.setState({
+                categoryList,
+                categoryToBeDeleted: undefined,
+                isDeletingCategory: false
+            });
+        });
+    };
+
     render() {
-        console.log("Test");
         return (
             <div className="container">
                 <div className="row">
@@ -87,9 +109,42 @@ export class CategoryAddPage extends React.Component {
                         </div>
                     </div>
                     <div className="col-3">
-                        <CategoryList loadError={this.state.categoryLoadError} categoryList={this.state.categoryList}/>
+                        <div className="card">
+                            <h1 className="text-center">Categories</h1>
+                            <div className="list-group list-group-flush">
+                                <ul>
+                                    {this.state.categoryList.map((category) =>
+                                        <li key={category.id}>
+                                            {category.name}
+                                            <button
+                                                className="btn btn-outline-danger btn-sm"
+                                                onClick={() => this.onClickDeleteCategory(category)}>
+                                                <i className="far fa-trash-alt"/>
+                                            </button>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                            {this.categoryLoadError && (
+                                <span className="text-center text-danger">
+            {this.state.categoryLoadError}
+          </span>
+                            )}
+                        </div>
                     </div>
                 </div>
+                <Modal
+                    visible={this.state.categoryToBeDeleted && true}
+                    onClickCancel={this.onClickModalCancel}
+                    body={
+                        this.state.categoryToBeDeleted &&
+                        `Are you sure to delete '${this.state.categoryToBeDeleted.name}'?`
+                    }
+                    title="Delete!"
+                    okButton="Delete Category"
+                    onClickOk={this.onClickModalOk}
+                    pendingApiCall={this.state.isDeletingCategory}
+                />
             </div>
         );
     }

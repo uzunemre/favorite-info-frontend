@@ -100,7 +100,7 @@ class TopBar extends React.Component {
                                 className="dropdown-item"
                             ><i className="fas fa-user text-info"></i> {userInfo(this.props.user)}</span>
                             <Link
-                                to="/addCategory"
+                                to="/categories"
                                 className="dropdown-item"
                                 onClick={this.onClickAddCategory}
                             >

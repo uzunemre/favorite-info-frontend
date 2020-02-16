@@ -25,3 +25,8 @@ export const addCategory = (category) => {
 export const listCategories = () => {
     return axios.get('/api/1.0/categories');
 };
+
+export const deleteCategory = (categoryId) => {
+    return axios.delete('/api/1.0/categories/' + categoryId);
+};
+
