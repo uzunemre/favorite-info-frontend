@@ -31,7 +31,7 @@ class TopBar extends React.Component {
         });
     };
 
-    onClickAddCategory = () => {
+    hideDropDown = () => {
         this.setState({
             dropDownVisible: false
         });
@@ -100,10 +100,15 @@ class TopBar extends React.Component {
                                 className="dropdown-item"
                             ><i className="fas fa-user text-info"></i> {userInfo(this.props.user)}</span>
                             <Link
+                                to="/notes"
+                                className="dropdown-item"
+                                onClick={this.hideDropDown}>
+                                <i className="fa fa-plus"></i>Add Note
+                            </Link>
+                            <Link
                                 to="/categories"
                                 className="dropdown-item"
-                                onClick={this.onClickAddCategory}
-                            >
+                                onClick={this.hideDropDown}>
                                 <i className="fa fa-plus"></i>Add Category
                             </Link>
                             <span

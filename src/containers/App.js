@@ -5,6 +5,7 @@ import HomePage from "../pages/HomePage";
 import UserSignupPage from "../pages/UserSignUpPage";
 import LoginPage from '../pages/LoginPage';
 import {CategoryEditPage} from "../pages/CategoryEditPage";
+import {NoteEditPage} from "../pages/NoteEditPage";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/login" component={LoginPage}/>
                     <Route path="/signup" component={UserSignupPage}/>
                     <Route path="/categories" component={CategoryEditPage}/>
+                    <Route path="/notes" component={NoteEditPage}/>
                 </Switch>
             </div>
         </div>
