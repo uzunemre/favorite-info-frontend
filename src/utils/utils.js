@@ -15,3 +15,10 @@ export function isEmpty(data) {
 
     } else return typeof (data) === 'undefined';
 }
+
+export function boolInfo(data) {
+    if (data) {
+        return "Yes";
+    }
+    return "No";
+}

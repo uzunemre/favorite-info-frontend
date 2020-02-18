@@ -3,6 +3,7 @@ import Input from "../components/Input";
 import * as apiCalls from "../api/apiCalls";
 import Select from "../components/Select";
 import {isEmpty} from "../utils/utils";
+import ButtonWithProgress from "../components/ButtonWithProgress";
 
 export class NoteEditPage extends React.Component {
 
@@ -63,7 +64,10 @@ export class NoteEditPage extends React.Component {
 
     onChangeCategory = (event) => {
         const value = event.target.value;
-        this.setState({category: value});
+        const selected = this.state.categories.filter(category => category.value === value)[0];
+        if (!isEmpty(selected)) {
+            this.setState({category: selected});
+        }
     };
 
     onChangeImportanceLevel = (event) => {
@@ -91,6 +95,32 @@ export class NoteEditPage extends React.Component {
                 this.setState({isRead: false});
             }
         }
+    };
+
+    onClickSave = () => {
+        const note = {
+            title: this.state.title,
+            content: this.state.note,
+            summary: '',
+            categoryId: this.state.category.id,
+            importanceLevel: this.state.importanceLevel.id,
+            read: this.state.isRead
+        };
+        this.setState({pendingApiCall: true});
+        apiCalls
+            .addNote(note)
+            .then((response) => {
+                this.setState({pendingApiCall: false}, () =>
+                    this.props.history.push('/')
+                );
+            })
+            .catch((apiError) => {
+                let errors = {...this.state.errors};
+                if (apiError.response.data && apiError.response.data.validationErrors) {
+                    errors = {...apiError.response.data.validationErrors};
+                }
+                this.setState({pendingApiCall: false, errors});
+            });
     };
 
     render() {
@@ -130,6 +160,14 @@ export class NoteEditPage extends React.Component {
                         label="Read"
                         items={this.yesNoList}
                         onChange={this.onChangeRead}
+                    />
+                </div>
+                <div className="text-center">
+                    <ButtonWithProgress
+                        onClick={this.onClickSave}
+                        disabled={this.state.pendingApiCall}
+                        pendingApiCall={this.state.pendingApiCall}
+                        text="Sign Up"
                     />
                 </div>
             </div>

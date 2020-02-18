@@ -18,6 +18,15 @@ export const login = (user) => {
     return axios.post('/api/1.0/login', {}, {auth: user});
 };
 
+export const addNote = (note) => {
+    return axios.post('/api/1.0/notes', note);
+};
+
+export const listNotes = (param = {page: 0, size: 100}) => {
+    const path = `/api/1.0/notes?page=${param.page || 0}&size=${param.size || 100}`;
+    return axios.get(path);
+};
+
 export const addCategory = (category) => {
     return axios.post('/api/1.0/categories', category);
 };

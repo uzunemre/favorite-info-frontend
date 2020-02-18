@@ -1,12 +1,61 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import * as apiCalls from "../api/apiCalls";
+import {boolInfo} from "../utils/utils";
 
 class HomePage extends React.Component {
+
+    state = {
+        page: {
+            content: [],
+            number: 0,
+            size: 100
+        }
+    };
+
+    componentDidMount() {
+        this.loadNotes();
+    }
+
+    loadNotes = (requestedPage = 0) => {
+        apiCalls
+            .listNotes({page: requestedPage, size: this.state.page.size})
+            .then((response) => {
+                this.setState({
+                    page: response.data,
+                    loadError: undefined
+                });
+            })
+            .catch((error) => {
+                this.setState({loadError: 'Notes load failed'});
+            });
+    };
+
     render() {
         return (
-            <div data-testid="homepage">
-                <div className="row">
-                </div>
+            <div className="container">
+                <table className="table">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Read</th>
+                        <th scope="col">#</th>
+                        <th scope="col">#</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.state.page.content.map((note) =>
+                        <tr key={note.id}>
+                            <th scope="row">#</th>
+                            <td>{note.title}</td>
+                            <td>{note.category}</td>
+                            <td>{boolInfo(note.read)}</td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
             </div>
         );
     }
