@@ -4,17 +4,21 @@ import * as apiCalls from "../api/apiCalls";
 import Select from "../components/Select";
 import {isEmpty} from "../utils/utils";
 import ButtonWithProgress from "../components/ButtonWithProgress";
+import Spinner from "../components/Spinner";
 
 export class NoteEditPage extends React.Component {
 
     state = {
+        id: '',
         title: '',
-        category: null,
-        importanceLevel: null,
+        category: '',
+        importanceLevel: '',
         note: '',
+        summary: '',
         isRead: false,
-        pendingApiCall: false,
+        saveApiCall: false,
         categories: [],
+        isLoadingNoteDetail: false,
     };
 
     importanceLevels = [
@@ -25,16 +29,12 @@ export class NoteEditPage extends React.Component {
         {value: "Very High", id: 5},
     ];
 
-    yesNoList = [
-        {value: "No", id: 0},
-        {value: "Yes", id: 1}
-    ];
-
     componentDidMount() {
-        this.loadCategories();
+        this.setState({isLoadingNoteDetail: true});
+        this.loadData();
     }
 
-    loadCategories = () => {
+    loadData = () => {
         apiCalls
             .listCategories()
             .then((response) => {
@@ -51,10 +51,38 @@ export class NoteEditPage extends React.Component {
                     categories: categories,
                     categoryLoadError: undefined
                 });
+                this.loadNoteDetail();
             })
             .catch((error) => {
                 this.setState({categoryLoadError: 'Category load failed'});
             });
+    };
+
+
+    loadNoteDetail = () => {
+        const noteId = this.props.match.params.noteId;
+        if (isEmpty(noteId)) {
+            this.setState({isLoadingNoteDetail: false});
+        } else {
+            apiCalls
+                .getNote(noteId)
+                .then((response) => {
+                    const note = response.data;
+                    this.setState({
+                        id: note.id,
+                        title: note.title,
+                        note: note.content,
+                        summary: note.summary,
+                        importanceLevel: this.importanceLevels.filter(level => level.id === note.level)[0],
+                        category: this.state.categories.filter(category => category.id === note.categoryId)[0],
+                        noteLoadError: undefined,
+                        isLoadingNoteDetail: false,
+                    });
+                })
+                .catch((error) => {
+                    this.setState({noteLoadError: 'Note load failed'});
+                });
+        }
     };
 
     onChangeTitle = (event) => {
@@ -83,34 +111,30 @@ export class NoteEditPage extends React.Component {
         this.setState({note: value});
     };
 
-    onChangeRead = (event) => {
+    onChangeSummary = (event) => {
         const value = event.target.value;
-        const selected = this.yesNoList.filter(level => level.value === value)[0];
-        if (isEmpty(selected)) {
-            this.setState({isRead: false});
-        } else {
-            if (selected.value === "true") {
-                this.setState({isRead: true});
-            } else {
-                this.setState({isRead: false});
-            }
-        }
+        this.setState({summary: value});
     };
 
     onClickSave = () => {
         const note = {
+            id: undefined,
             title: this.state.title,
             content: this.state.note,
-            summary: '',
+            summary: this.state.summary,
             categoryId: this.state.category.id,
             importanceLevel: this.state.importanceLevel.id,
-            read: this.state.isRead
+            read: false,
         };
-        this.setState({pendingApiCall: true});
+        this.setState({saveApiCall: true});
+        const noteId = this.props.match.params.noteId;
+        if (!isEmpty(noteId)) {
+            note.id = noteId;
+        }
         apiCalls
-            .addNote(note)
+            .saveNote(note)
             .then((response) => {
-                this.setState({pendingApiCall: false}, () =>
+                this.setState({saveApiCall: false}, () =>
                     this.props.history.push('/')
                 );
             })
@@ -119,11 +143,14 @@ export class NoteEditPage extends React.Component {
                 if (apiError.response.data && apiError.response.data.validationErrors) {
                     errors = {...apiError.response.data.validationErrors};
                 }
-                this.setState({pendingApiCall: false, errors});
+                this.setState({saveApiCall: false, errors});
             });
     };
 
     render() {
+        if (this.state.isLoadingNoteDetail) {
+            return <Spinner/>;
+        }
         return (
             <div className="container">
                 <h1 className="text-center">Note Add</h1>
@@ -137,6 +164,7 @@ export class NoteEditPage extends React.Component {
                 <div className="col-12 mb-3">
                     <Select
                         label="Category"
+                        value={this.state.category.value}
                         items={this.state.categories}
                         onChange={this.onChangeCategory}
                     />
@@ -144,6 +172,7 @@ export class NoteEditPage extends React.Component {
                 <div className="col-12 mb-3">
                     <Select
                         label="Importance Level"
+                        value={this.state.importanceLevel.value}
                         items={this.importanceLevels}
                         onChange={this.onChangeImportanceLevel}
                     />
@@ -155,19 +184,24 @@ export class NoteEditPage extends React.Component {
                         onChange={this.onChangeNote}
                     />
                 </div>
+
                 <div className="col-12 mb-3">
-                    <Select
-                        label="Read"
-                        items={this.yesNoList}
-                        onChange={this.onChangeRead}
+                    <label htmlFor="comment">Summary</label>
+                    <textarea
+                        className="form-control"
+                        rows="5"
+                        value={this.state.summary}
+                        onChange={this.onChangeSummary}
                     />
                 </div>
+
+
                 <div className="text-center">
                     <ButtonWithProgress
                         onClick={this.onClickSave}
-                        disabled={this.state.pendingApiCall}
-                        pendingApiCall={this.state.pendingApiCall}
-                        text="Sign Up"
+                        disabled={this.state.saveApiCall}
+                        pendingApiCall={this.state.saveApiCall}
+                        text="Save"
                     />
                 </div>
             </div>

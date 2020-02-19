@@ -17,7 +17,7 @@ function App() {
                     <Route path="/login" component={LoginPage}/>
                     <Route path="/signup" component={UserSignupPage}/>
                     <Route path="/categories" component={CategoryEditPage}/>
-                    <Route path="/notes" component={NoteEditPage}/>
+                    <Route path="/notes/:noteId?" component={NoteEditPage} />
                 </Switch>
             </div>
         </div>

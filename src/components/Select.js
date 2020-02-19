@@ -6,6 +6,7 @@ const Select = (props) => {
         <div className="form-group">
             <label>{props.label && <label>{props.label}</label>}</label>
             <select
+                value={props.value}
                 className="form-control"
                 onChange={props.onChange}>
                 <option></option>

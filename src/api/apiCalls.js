@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {isEmpty} from "../utils/utils";
 
 export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
     if (isLoggedIn) {
@@ -18,8 +19,24 @@ export const login = (user) => {
     return axios.post('/api/1.0/login', {}, {auth: user});
 };
 
+export const getNote = (id) => {
+    return axios.get(`/api/1.0/notes/${id}`);
+};
+
+export const saveNote = (note) => {
+    if (isEmpty(note.id)) {
+        return addNote(note);
+    } else {
+        return updateNote(note);
+    }
+};
+
 export const addNote = (note) => {
     return axios.post('/api/1.0/notes', note);
+};
+
+export const updateNote = (note) => {
+    return axios.put('/api/1.0/notes/' + note.id, note);
 };
 
 export const listNotes = (param = {page: 0, size: 100}) => {
