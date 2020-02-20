@@ -39,6 +39,7 @@ class HomePage extends React.Component {
                     <thead className="thead-dark">
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Importance Level</th>
                         <th scope="col">Title</th>
                         <th scope="col">Category</th>
                         <th scope="col">Read</th>
@@ -49,6 +50,7 @@ class HomePage extends React.Component {
                     {this.state.page.content.map((note) =>
                         <tr key={note.id}>
                             <th scope="row">#</th>
+                            <td>{note.importanceLevel}</td>
                             <td>{note.title}</td>
                             <td>{note.category}</td>
                             <td>{boolInfo(note.read)}</td>

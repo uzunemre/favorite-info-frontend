@@ -5,6 +5,7 @@ import Select from "../components/Select";
 import {isEmpty} from "../utils/utils";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import Spinner from "../components/Spinner";
+import Modal from "../components/Modal";
 
 export class NoteEditPage extends React.Component {
 
@@ -68,6 +69,7 @@ export class NoteEditPage extends React.Component {
                 .getNote(noteId)
                 .then((response) => {
                     const note = response.data;
+                    console.log(note);
                     this.setState({
                         id: note.id,
                         title: note.title,
@@ -75,6 +77,7 @@ export class NoteEditPage extends React.Component {
                         summary: note.summary,
                         importanceLevel: this.importanceLevels.filter(level => level.id === note.level)[0],
                         category: this.state.categories.filter(category => category.id === note.categoryId)[0],
+                        isRead: note.read,
                         noteLoadError: undefined,
                         isLoadingNoteDetail: false,
                     });
@@ -116,6 +119,11 @@ export class NoteEditPage extends React.Component {
         this.setState({summary: value});
     };
 
+    onChangeRead = (event) => {
+        const value = event.target.checked;
+        this.setState({isRead: value});
+    };
+
     onClickSave = () => {
         const note = {
             id: undefined,
@@ -124,7 +132,7 @@ export class NoteEditPage extends React.Component {
             summary: this.state.summary,
             categoryId: this.state.category.id,
             importanceLevel: this.state.importanceLevel.id,
-            read: false,
+            read: this.state.isRead,
         };
         this.setState({saveApiCall: true});
         const noteId = this.props.match.params.noteId;
@@ -145,6 +153,27 @@ export class NoteEditPage extends React.Component {
                 }
                 this.setState({saveApiCall: false, errors});
             });
+    };
+
+    onClickDeleteNote = () => {
+        this.setState({clickDelete: true});
+    };
+
+    onClickDeleteModalCancel = () => {
+        this.setState({clickDelete: false});
+    };
+
+    onClickDeleteModalOk = () => {
+        this.setState({isDeletingNote: true});
+        apiCalls
+            .deleteNote(this.state.id)
+            .then((response) => {
+                this.props.history.push('/');
+            })
+            .catch((apiError) => {
+                this.setState({isDeletingNote: false});
+            });
+
     };
 
     render() {
@@ -184,7 +213,6 @@ export class NoteEditPage extends React.Component {
                         onChange={this.onChangeNote}
                     />
                 </div>
-
                 <div className="col-12 mb-3">
                     <label htmlFor="comment">Summary</label>
                     <textarea
@@ -195,6 +223,14 @@ export class NoteEditPage extends React.Component {
                     />
                 </div>
 
+                <div className="col-12 mb-3">
+                    <div className="custom-control custom-checkbox">
+                        <input onChange={this.onChangeRead} defaultChecked={this.state.isRead} type="checkbox"
+                               className="custom-control-input"
+                               id="readCheck"/>
+                        <label className="custom-control-label" htmlFor="readCheck">I read it</label>
+                    </div>
+                </div>
 
                 <div className="text-center">
                     <ButtonWithProgress
@@ -203,7 +239,23 @@ export class NoteEditPage extends React.Component {
                         pendingApiCall={this.state.saveApiCall}
                         text="Save"
                     />
+                    {this.state.id && <button style={{marginLeft: "5px"}}
+                                              className='btn btn-danger'
+                                              onClick={() => this.onClickDeleteNote()}>
+                        Delete
+                    </button>}
                 </div>
+
+                <Modal
+                    visible={this.state.clickDelete && true}
+                    onClickCancel={this.onClickDeleteModalCancel}
+                    body={`Are you sure to delete?`}
+                    title="Delete!"
+                    okButton="Delete Note"
+                    onClickOk={this.onClickDeleteModalOk}
+                    pendingApiCall={this.state.isDeletingNote}
+                />
+
             </div>
         );
     }

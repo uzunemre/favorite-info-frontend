@@ -39,6 +39,10 @@ export const updateNote = (note) => {
     return axios.put('/api/1.0/notes/' + note.id, note);
 };
 
+export const deleteNote = (noteId) => {
+    return axios.delete('/api/1.0/notes/' + noteId);
+};
+
 export const listNotes = (param = {page: 0, size: 100}) => {
     const path = `/api/1.0/notes?page=${param.page || 0}&size=${param.size || 100}`;
     return axios.get(path);
