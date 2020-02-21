@@ -1,0 +1,33 @@
+{
+  "name": "favorite",
+  "version": "1.0.0",
+  "description": "favorite",
+  "main": "server.js",
+  "engines": {
+    "node": "11.0.0"
+  },
+  "scripts": {
+    "client-install": "npm install --prefix favorite",
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix favorite",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix favorite && npm run build --prefix favorite"
+  },
+  "keywords": [
+    "heroku",
+    "react",
+    "node.js",
+    "tutorial",
+    "saturday-night-works",
+    "npm"
+  ],
+  "author": "emre uzun",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "create-react-app": "^2.1.1",
+    "express": "^4.16.4",
+    "nodemon": "^1.18.9"
+  }
+}

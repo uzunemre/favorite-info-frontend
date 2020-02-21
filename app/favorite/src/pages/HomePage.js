@@ -22,6 +22,7 @@ class HomePage extends React.Component {
         apiCalls
             .listNotes({page: requestedPage, size: this.state.page.size})
             .then((response) => {
+                console.log(response);
                 this.setState({
                     page: response.data,
                     loadError: undefined
