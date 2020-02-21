@@ -1,26 +1,32 @@
 import axios from 'axios';
 import {isEmpty} from "../utils/utils";
 
+
+var axiosInstance = axios.create({
+    baseURL: 'https://favorite-info-backend.herokuapp.com',
+    /* other custom settings */
+});
+
 export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
     if (isLoggedIn) {
-        axios.defaults.headers.common['Authorization'] = `Basic ${btoa(
+        axiosInstance.defaults.headers.common['Authorization'] = `Basic ${btoa(
             username + ':' + password
         )}`;
     } else {
-        delete axios.defaults.headers.common['Authorization'];
+        delete axiosInstance.defaults.headers.common['Authorization'];
     }
 };
 
 export const signup = (user) => {
-    return axios.post('/api/1.0/users', user);
+    return axiosInstance.post('/api/1.0/users', user);
 };
 
 export const login = (user) => {
-    return axios.post('/api/1.0/login', {}, {auth: user});
+    return axiosInstance.post('/api/1.0/login', {}, {auth: user});
 };
 
 export const getNote = (id) => {
-    return axios.get(`/api/1.0/notes/${id}`);
+    return axiosInstance.get(`/api/1.0/notes/${id}`);
 };
 
 export const saveNote = (note) => {
@@ -32,31 +38,31 @@ export const saveNote = (note) => {
 };
 
 export const addNote = (note) => {
-    return axios.post('/api/1.0/notes', note);
+    return axiosInstance.post('/api/1.0/notes', note);
 };
 
 export const updateNote = (note) => {
-    return axios.put('/api/1.0/notes/' + note.id, note);
+    return axiosInstance.put('/api/1.0/notes/' + note.id, note);
 };
 
 export const deleteNote = (noteId) => {
-    return axios.delete('/api/1.0/notes/' + noteId);
+    return axiosInstance.delete('/api/1.0/notes/' + noteId);
 };
 
 export const listNotes = (param = {page: 0, size: 100}) => {
     const path = `/api/1.0/notes?page=${param.page || 0}&size=${param.size || 100}`;
-    return axios.get(path);
+    return axiosInstance.get(path);
 };
 
 export const addCategory = (category) => {
-    return axios.post('/api/1.0/categories', category);
+    return axiosInstance.post('/api/1.0/categories', category);
 };
 
 export const listCategories = () => {
-    return axios.get('/api/1.0/categories');
+    return axiosInstance.get('/api/1.0/categories');
 };
 
 export const deleteCategory = (categoryId) => {
-    return axios.delete('/api/1.0/categories/' + categoryId);
+    return axiosInstance.delete('/api/1.0/categories/' + categoryId);
 };
 
