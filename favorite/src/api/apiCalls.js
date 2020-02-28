@@ -29,6 +29,10 @@ export const getNote = (id) => {
     return axiosInstance.get(`/api/1.0/notes/${id}`);
 };
 
+export const getRandomNote = () => {
+    return axiosInstance.get(`/api/1.0/notes/random-note`);
+};
+
 export const saveNote = (note) => {
     if (isEmpty(note.id)) {
         return addNote(note);
@@ -49,7 +53,7 @@ export const deleteNote = (noteId) => {
     return axiosInstance.delete('/api/1.0/notes/' + noteId);
 };
 
-export const listNotes = (param = {page: 0, size: 100}) => {
+export const getNotes = (param = {page: 0, size: 100}) => {
     const path = `/api/1.0/notes?page=${param.page || 0}&size=${param.size || 100}`;
     return axiosInstance.get(path);
 };
@@ -58,7 +62,7 @@ export const addCategory = (category) => {
     return axiosInstance.post('/api/1.0/categories', category);
 };
 
-export const listCategories = () => {
+export const getCategories = () => {
     return axiosInstance.get('/api/1.0/categories');
 };
 

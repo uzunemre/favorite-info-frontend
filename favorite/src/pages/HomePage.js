@@ -11,18 +11,31 @@ class HomePage extends React.Component {
             content: [],
             number: 0,
             size: 100
-        }
+        },
+        randomNote: {},
     };
 
     componentDidMount() {
         this.loadNotes();
+        this.loadRandomNote();
+    }
+
+    loadRandomNote() {
+        apiCalls
+            .getRandomNote()
+            .then((response) => {
+                console.log(response);
+                this.setState({randomNote: response.data});
+            })
+            .catch((error) => {
+                this.setState({randomNoteLoadError: 'Random Note load failed'});
+            });
     }
 
     loadNotes = (requestedPage = 0) => {
         apiCalls
-            .listNotes({page: requestedPage, size: this.state.page.size})
+            .getNotes({page: requestedPage, size: this.state.page.size})
             .then((response) => {
-                console.log(response);
                 this.setState({
                     page: response.data,
                     loadError: undefined
@@ -35,8 +48,21 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div className="container" style={{marginTop: "30px"}}>
-                <table className="table">
+            <div className="container">
+                <div className="card" style={{marginTop: "20px"}}>
+                    <div className="card-header">
+                        Random Note
+                        <a onClick={() => this.loadRandomNote()} style={{float: "right"}} href="#"
+                           className="btn btn-primary">Get</a>
+                    </div>
+                    <div className="card-body">
+                        <h5 className="card-title">Importance Level:{this.state.randomNote.importanceLevel}</h5>
+                        <p className="card-text">{this.state.randomNote.content}</p>
+                        <Link className="btn btn-primary" to={`/notes/${this.state.randomNote.id}`}>Detail</Link>
+                    </div>
+                </div>
+
+                <table className="table" style={{marginTop: "20px"}}>
                     <thead className="thead-dark">
                     <tr>
                         <th scope="col">#</th>

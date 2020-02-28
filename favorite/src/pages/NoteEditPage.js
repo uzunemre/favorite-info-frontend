@@ -37,7 +37,7 @@ export class NoteEditPage extends React.Component {
 
     loadData = () => {
         apiCalls
-            .listCategories()
+            .getCategories()
             .then((response) => {
                 const data = response.data;
                 const categories = [];
@@ -69,7 +69,6 @@ export class NoteEditPage extends React.Component {
                 .getNote(noteId)
                 .then((response) => {
                     const note = response.data;
-                    console.log(note);
                     this.setState({
                         id: note.id,
                         title: note.title,
@@ -147,6 +146,7 @@ export class NoteEditPage extends React.Component {
                 );
             })
             .catch((apiError) => {
+                console.log(apiError);
                 let errors = {...this.state.errors};
                 if (apiError.response.data && apiError.response.data.validationErrors) {
                     errors = {...apiError.response.data.validationErrors};

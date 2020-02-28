@@ -19,7 +19,7 @@ export class CategoryEditPage extends React.Component {
 
     loadData = () => {
         apiCalls
-            .listCategories()
+            .getCategories()
             .then((response) => {
                 this.setState({
                     categoryList: response.data,
